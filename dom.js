@@ -39,24 +39,67 @@ export const kanbanBoard = () => {
 
   // Création des tâches
   // ----------------------------------------------------
-  const createTask = (
-    taskName,
-    parentList,
-    taskId,
-    inputKanban,
-    divBottomList
-  ) => {
+  const createTask = (taskData, parentList, inputKanban, divBottomList) => {
     const taskElement = createAndAddElement(
       "span",
       parentList,
-      taskName,
+      taskData.name,
       {
         class: "span-task",
         draggable: "true",
-        id: taskId,
+        id: taskData.id,
       },
       divBottomList
     );
+
+    // Ajout de la couleur
+    // ----------------------------------------------------
+
+    taskElement.style.backgroundColor = taskData.color;
+
+    // Création d'un bouton pour changer la couleur
+    const colorButton = createAndAddElement("input", taskElement, "", {
+      type: "color",
+      value: taskData.color,
+      class: "color-picker",
+    });
+
+    // Événement pour changer la couleur
+    colorButton.addEventListener("input", (e) => {
+      const newColor = e.target.value;
+
+      // On met à jour le DOM
+      taskElement.style.backgroundColor = newColor;
+
+      // On met à jour les données de kanbanData
+      const list = kanbanData.find((l) => l.id === parentList.id);
+      const task = list.tasks.find((t) => t.id === taskData.id);
+      task.color = newColor;
+
+      saveToLocalStorage();
+    });
+    // ----------------------------------------------------
+
+    // Ajout de l´événement double click
+    // ----------------------------------------------------
+
+    taskElement.addEventListener("dblclick", () => {
+      const newNameTask = prompt(
+        "Veuillez choisir un nouveau nom pour cette tâche"
+      );
+      if (
+        newNameTask !== null &&
+        newNameTask !== "" &&
+        newNameTask !== taskData.name
+      ) {
+        taskElement.textContent = newNameTask;
+        const list = kanbanData.find((l) => l.id === parentList.id);
+        const task = list.tasks.find((t) => t.id === taskData.id);
+        task.name = newNameTask;
+        saveToLocalStorage();
+      }
+    });
+    // ----------------------------------------------------
 
     // ----------------------------------------------------
 
@@ -75,7 +118,7 @@ export const kanbanBoard = () => {
         (list) => list.id === parentList.id
       );
       const taskIndex = kanbanData[listIndex].tasks.findIndex(
-        (task) => task.id === taskId
+        (task) => task.id === taskData.id
       );
       kanbanData[listIndex].tasks.splice(taskIndex, 1);
       saveToLocalStorage();
@@ -115,6 +158,7 @@ export const kanbanBoard = () => {
 
     const inputKanban = createAndAddElement("input", divBottomList, "", {
       class: "input-kanban",
+      placeholder: "Veuillez entrez une tâche",
     });
     // ----------------------------------------------------
 
@@ -131,7 +175,7 @@ export const kanbanBoard = () => {
 
     if (listData && listData.tasks) {
       listData.tasks.forEach((task) => {
-        createTask(task.name, kanbanList, task.id, inputKanban, divBottomList);
+        createTask(task, kanbanList, inputKanban, divBottomList);
       });
     }
     // ----------------------------------------------------
@@ -192,13 +236,16 @@ export const kanbanBoard = () => {
     buttonAddTask.addEventListener("click", () => {
       const taskName = inputKanban.value;
       if (taskName) {
-        const taskId = `task-${Date.now()}`;
-        const newTask = { name: taskName, id: taskId };
+        const newTask = {
+          id: `task-${Date.now()}`,
+          name: taskName,
+          color: "green",
+        };
         const listIndex = kanbanData.findIndex(
           (list) => list.id === kanbanList.id
         );
         kanbanData[listIndex].tasks.push(newTask);
-        createTask(taskName, kanbanList, taskId, inputKanban, divBottomList);
+        createTask(newTask, kanbanList, inputKanban, divBottomList);
         saveToLocalStorage();
         inputKanban.value = "";
       }
