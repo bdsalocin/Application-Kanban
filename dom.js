@@ -20,19 +20,20 @@ export const kanbanBoard = () => {
   // ----------------------------------------------------
   const getDragAfterElement = (container, y) => {
     const draggableElements = [
-      ...container.querySelectorAll(".span-task:not(.dragging)"),
+      ...container.querySelectorAll(".span-task:not(.dragging)"), // On sélectionne tous les éléments HTML qui ont une classe span-task et qui n´ont pas la class dragging
     ];
     return draggableElements.reduce(
       (closest, child) => {
         const box = child.getBoundingClientRect();
-        const offset = y - box.top - box.height / 2;
+        const offset = y - box.top - box.height / 2; // permet de trouver la position d´un point par rapport où se trouve la souris pour trouver son centre
         if (offset < 0 && offset > closest.offset) {
           return { offset: offset, element: child };
         } else {
           return closest;
         }
       },
-      { offset: Number.NEGATIVE_INFINITY }
+      { offset: Number.NEGATIVE_INFINITY } // = la plus petite valeur possible, permet au 1er élément de la liste
+      // d´être considéré comme l´élément le plus proche lors de la 1ère comparaison car toute valeur sera supérieure à -Infinity.
     ).element;
   };
   // ----------------------------------------------------
@@ -57,6 +58,8 @@ export const kanbanBoard = () => {
 
     taskElement.style.backgroundColor = taskData.color;
 
+    // ----------------------------------------------------
+
     // Création d'un bouton pour changer la couleur
     const colorButton = createAndAddElement("input", taskElement, "", {
       type: "color",
@@ -72,15 +75,15 @@ export const kanbanBoard = () => {
       taskElement.style.backgroundColor = newColor;
 
       // On met à jour les données de kanbanData
-      const list = kanbanData.find((l) => l.id === parentList.id);
-      const task = list.tasks.find((t) => t.id === taskData.id);
+      const list = kanbanData.find((l) => l.id === parentList.id); // représente chaque élément l du tableau pendant l´ítération
+      const task = list.tasks.find((t) => t.id === taskData.id); // représente chaque élément t du tableau pendant l´ítération
       task.color = newColor;
 
       saveToLocalStorage();
     });
     // ----------------------------------------------------
 
-    // Ajout de l´événement double click
+    // Ajout de l´événement double click pour les taches
     // ----------------------------------------------------
 
     taskElement.addEventListener("dblclick", () => {
@@ -125,7 +128,7 @@ export const kanbanBoard = () => {
     });
 
     taskElement.addEventListener("dragstart", (e) => {
-      e.dataTransfer.setData("text/plain", taskElement.id);
+      e.dataTransfer.setData("text/plain", taskElement.id); // permet de représenter les données sans mise en forme
       taskElement.classList.add("dragging");
     });
 
