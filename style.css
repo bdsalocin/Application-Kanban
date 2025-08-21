@@ -100,7 +100,12 @@ h1 {
   margin-bottom: 20px;
   padding: 20px;
   border-radius: 5px;
+  border: 1px dashed black;
   box-shadow: 1px 1px 0 1px;
+}
+
+.input-kanban:active {
+  transform: scaleX(1.1);
 }
 
 .button-task {
@@ -110,6 +115,7 @@ h1 {
   padding: 20px;
   width: 90%;
   transition: 0.3s ease-in-out;
+  font-size: 1.2rem;
 }
 
 .button-task:hover {
@@ -117,9 +123,12 @@ h1 {
 }
 
 .button-kanban {
-  padding: 20px 30px;
+  padding: 20px;
   background-color: rgba(178, 91, 244, 0.671);
   border-radius: 10px;
+  font-size: 1.2rem;
+  box-shadow: 1px 1px 0 1px;
+  transition: 0.3s ease-in-out;
 }
 
 .button-kanban:hover {
@@ -130,7 +139,7 @@ h1 {
 .button-delete-task {
   padding: 5px;
   margin: 5px;
-  border: 1px solid black;
+  border: 1px dashed black;
   border-radius: 5px;
   font-size: 1rem;
   background-color: rgba(0, 128, 0, 0);

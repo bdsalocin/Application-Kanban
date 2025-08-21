@@ -20,12 +20,14 @@ export const kanbanBoard = () => {
   // ----------------------------------------------------
   const getDragAfterElement = (container, y) => {
     const draggableElements = [
-      ...container.querySelectorAll(".span-task:not(.dragging)"), // On sélectionne tous les éléments HTML qui ont une classe span-task et qui n´ont pas la class dragging
+      ...container.querySelectorAll(".span-task:not(.dragging)"), // On décompose et on sélectionne tous les éléments HTML qui ont une classe span-task et qui n´ont pas la class dragging
     ];
+    // on va comparer les éléments qui ne sont pas dans la liste et on va comparer leur position par rapport à la souris
     return draggableElements.reduce(
       (closest, child) => {
         const box = child.getBoundingClientRect();
         const offset = y - box.top - box.height / 2; // permet de trouver la position d´un point par rapport où se trouve la souris pour trouver son centre
+        // si offset positif souris en dessous, si negatif au dessus
         if (offset < 0 && offset > closest.offset) {
           return { offset: offset, element: child };
         } else {
@@ -40,7 +42,7 @@ export const kanbanBoard = () => {
 
   // Création des tâches
   // ----------------------------------------------------
-  const createTask = (taskData, parentList, inputKanban, divBottomList) => {
+  const createTask = (taskData, parentList, divBottomList) => {
     const taskElement = createAndAddElement(
       "span",
       parentList,
@@ -75,8 +77,8 @@ export const kanbanBoard = () => {
       taskElement.style.backgroundColor = newColor;
 
       // On met à jour les données de kanbanData
-      const list = kanbanData.find((l) => l.id === parentList.id); // représente chaque élément l du tableau pendant l´ítération
-      const task = list.tasks.find((t) => t.id === taskData.id); // représente chaque élément t du tableau pendant l´ítération
+      const list = kanbanData.find((l) => l.id === parentList.id); // représente chaque élément list du tableau pendant l´ítération
+      const task = list.tasks.find((t) => t.id === taskData.id); // représente chaque élément task du tableau pendant l´ítération
       task.color = newColor;
 
       saveToLocalStorage();
@@ -161,7 +163,7 @@ export const kanbanBoard = () => {
 
     const inputKanban = createAndAddElement("input", divBottomList, "", {
       class: "input-kanban",
-      placeholder: "Veuillez entrez une tâche",
+      placeholder: "Entrez une tâche",
     });
     // ----------------------------------------------------
 
@@ -178,7 +180,7 @@ export const kanbanBoard = () => {
 
     if (listData && listData.tasks) {
       listData.tasks.forEach((task) => {
-        createTask(task, kanbanList, inputKanban, divBottomList);
+        createTask(task, kanbanList, divBottomList);
       });
     }
     // ----------------------------------------------------
@@ -242,13 +244,13 @@ export const kanbanBoard = () => {
         const newTask = {
           id: `task-${Date.now()}`,
           name: taskName,
-          color: "green",
+          color: "rgba(178, 91, 244, 0.671)",
         };
         const listIndex = kanbanData.findIndex(
           (list) => list.id === kanbanList.id
         );
         kanbanData[listIndex].tasks.push(newTask);
-        createTask(newTask, kanbanList, inputKanban, divBottomList);
+        createTask(newTask, kanbanList, divBottomList);
         saveToLocalStorage();
         inputKanban.value = "";
       }
@@ -273,7 +275,7 @@ export const kanbanBoard = () => {
     id: "header-kanban",
   });
 
-  const kanbanTitle = createAndAddElement("h1", kanbanHeader, "Kanban Board");
+  createAndAddElement("h1", kanbanHeader, "Kanban Board");
 
   // Bouton pour ajouter les listes
   // ----------------------------------------------------
