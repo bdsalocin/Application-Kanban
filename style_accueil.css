@@ -1,0 +1,38 @@
+:root {
+  --primary-color: rgba(178, 91, 244, 0.671);
+  --secondary-color: rgba(111, 86, 133, 0.495);
+  --delete-color: rgba(187, 84, 255, 0.842);
+  --background-color-body: #baa4ce;
+  --background-color-app: rgba(154, 107, 195, 0.201);
+}
+
+body {
+  font-family: "Bitcount", sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
+  background-color: var(--background-color-body);
+}
+
+main {
+  text-align: center;
+  padding: 2rem;
+  background-color: var(--secondary-color);
+  box-shadow: var(--box-shadow);
+  border-radius: 10px;
+  border: 1px dashed var(--background-color-app);
+}
+
+button {
+  background-color: var(--primary-color);
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+button:hover {
+  background-color: var(--secondary-color);
+}
